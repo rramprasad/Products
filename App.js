@@ -6,107 +6,163 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import 'react-native-gesture-handler';
+import React, {useEffect} from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { CommonActions, useTheme } from '@react-navigation/native';
+
+import SplashScreen from './reactnative/components/SplashScreen';
+import HomeScreen from './reactnative/components/HomeScreen';
+import WishListScreen from './reactnative/components/WishListScreen';
+import TrackOrdersScreen from './reactnative/components/TrackOrdersScreen';
+import CartScreen from './reactnative/components/CartScreen';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+
+const Stack = createStackNavigator();
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
+  Image
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+const App = () => {
+  const colorScheme = useColorScheme()
+  
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+    <NavigationContainer theme={colorScheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+      <Stack.Navigator initialRouteName="SplashScreen">
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="MainScreen"
+          component={MainScreen}
+          // options={({ route }) => ({
+          //   headerShown: true,
+          //   headerTitle: getHeaderTitle(route),
+          // })}
+          options={{
+              headerShown: true,
+              headerTitle : "Home",
+              headerTintColor: '#FFEB3B',
+              headerStyle: {
+                backgroundColor : "#3F51B5"
+              },
+              // headerLeftContainerStyle:{
+              //   paddingLeft:20
+              // },
+              // headerLeft: () => (
+              //   <Image source={require('./reactnative/images/app-logo.png')} style={styles.applogo} />
+              // )
+            }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 };
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+const MainScreen = () => {
+  const BottomTab = createMaterialBottomTabNavigator();
+  const currentTheme = useTheme()
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+    <BottomTab.Navigator 
+      initialRouteName="HomeScreen" 
+      shifting = {false}
+      activeColor={currentTheme.colors.appTitle}
+      inactiveColor='white'
+      labelStyle={{ fontSize: 12 }}
+      barStyle={{
+        backgroundColor: currentTheme.colors.primary
+      }}>
+          <BottomTab.Screen name="HomeScreen" component={HomeScreen} options={{ 
+              tabBarLabel : "Home",
+              tabBarIcon: ({color}) => (
+                  <MaterialCommunityIcons name="home" color={color} size={25}/>
+              )
+            }}/>
+          <BottomTab.Screen name="WishListScreen" component={WishListScreen} options={{ 
+              tabBarLabel : "WishList",
+              tabBarIcon: ({color}) => (
+                  <MaterialCommunityIcons name="heart" color={color} size={25}/>
+              ),
+            }}/>
+          <BottomTab.Screen name="TrackOrdersScreen" component={TrackOrdersScreen} options={{ 
+              tabBarLabel : "Orders",
+              tabBarIcon: ({color}) => (
+                  <MaterialCommunityIcons name="format-list-bulleted" color={color} size={25}/>
+              ),
+            }}/>
+          <BottomTab.Screen name="CartScreen" component={CartScreen} options={{ 
+              tabBarLabel : "Cart",
+              tabBarIcon: ({color}) => (
+                  <MaterialCommunityIcons name="cart" color={color} size={25}/>
+              ),
+            }}/>
+    </BottomTab.Navigator>
+  )
+}
+
+function getHeaderTitle(route) {
+  // If the focused route is not found, we need to assume it's the initial screen
+  // This can happen during if there hasn't been any navigation inside the screen
+  // In our case, it's "Feed" as that's the first screen inside the navigator
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'HomeScreen';
+
+  switch (routeName) {
+    case 'Home':
+      return 'News feed';
+    case 'Profile':
+      return 'My profile';
+    case 'Account':
+      return 'My account';
+  }
+}
+
+const AppLightTheme = {
+  dark: false,
+  colors: {
+    primary: '#3F51B5',
+    background: 'white',
+    card: '#3F51B5',
+    text: 'black',
+    appTitle: '#FFEB3B'
+  }
+}
+
+const AppDarkTheme = {
+  dark: true,
+  colors: {
+    primary: '#3F51B5',
+    background: '#3F51B5',
+    card: '#3F51B5',
+    text: 'white',
+    appTitle: '#FFEB3B'
+  }
+}
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+  applogo: {
+    width: 50,
+    height: 50
+  }
+})
 
 export default App;
+
+
+// options={{ 
+//   title : "Home",
+//   headerTintColor: '#FFEB3B',
+//   headerStyle: {
+//     backgroundColor : "#3F51B5"
+//   },
+//   headerLeft: () => {
+//     <Image source={require('./reactnative/images/app-logo.png')} style={styles.applogo} />
+//   }
