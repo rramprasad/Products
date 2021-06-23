@@ -130,7 +130,7 @@ const AppLightTheme = {
   colors: {
     primary: '#3F51B5',
     background: 'white',
-    card: '#3F51B5',
+    card: '#fafbff',
     text: 'black',
     appTitle: '#FFEB3B'
   }
@@ -141,7 +141,7 @@ const AppDarkTheme = {
   colors: {
     primary: '#3F51B5',
     background: '#3F51B5',
-    card: '#3F51B5',
+    card: '#fafbff',
     text: 'white',
     appTitle: '#FFEB3B'
   }
