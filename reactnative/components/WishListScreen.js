@@ -7,7 +7,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const WishListScreen = ({ navigation }) => {
     const theme = useTheme()
-    //const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
     const [wishListData, setWishListData] = useState([])
 
@@ -43,10 +42,10 @@ const WishListScreen = ({ navigation }) => {
                 renderItem={({item}) => (
                     <Card elevation={10} style={styles.cardItem(theme)}>
                         <Card.Content style={styles.cardContent}>
-                            <Image source={require('../images/app-logo.png')}  style={styles.productImage}/>
+                            <Image source={{uri:item.imageURL}}  style={styles.productImage}/>
                             <View style={styles.productDetailsContainer}>
-                                <Text style={styles.productName(theme)}>{item.title}</Text>
-                                <Text style={styles.productPrice(theme)}>Rs.{item.releaseYear}</Text>
+                                <Text style={styles.productName(theme)}>{item.name}</Text>
+                                <Text style={styles.productPrice(theme)}>Rs.{item.price}</Text>
                             </View>
                         </Card.Content>
                         <Card.Actions>
@@ -66,9 +65,9 @@ const WishListScreen = ({ navigation }) => {
 
 const getWishList = async () => {
     try {
-        const response = await fetch('https://reactnative.dev/movies.json');
+        const response = await fetch('https://raw.githubusercontent.com/rramprasad/BloomAppAssets/main/products_list.json');
         const json = await response.json();
-        return json.movies;
+        return json;
     } catch (error) {
         console.error(error);
     }

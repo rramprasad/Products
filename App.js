@@ -7,7 +7,7 @@
  */
 
 import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
@@ -15,6 +15,7 @@ import { CommonActions, useTheme } from '@react-navigation/native';
 
 import SplashScreen from './reactnative/components/SplashScreen';
 import HomeScreen from './reactnative/components/HomeScreen';
+import ProductDetailsScreen from './reactnative/components/ProductDetailsScreen';
 import WishListScreen from './reactnative/components/WishListScreen';
 import TrackOrdersScreen from './reactnative/components/TrackOrdersScreen';
 import CartScreen from './reactnative/components/CartScreen';
@@ -32,7 +33,7 @@ import {
 
 const App = () => {
   const colorScheme = useColorScheme()
-  
+
   return (
     <NavigationContainer theme={colorScheme === 'dark' ? AppDarkTheme : AppLightTheme}>
       <Stack.Navigator initialRouteName="SplashScreen">
@@ -49,19 +50,31 @@ const App = () => {
           //   headerTitle: getHeaderTitle(route),
           // })}
           options={{
-              headerShown: true,
-              headerTitle : "Home",
-              headerTintColor: '#FFEB3B',
-              headerStyle: {
-                backgroundColor : "#3F51B5"
-              },
-              // headerLeftContainerStyle:{
-              //   paddingLeft:20
-              // },
-              // headerLeft: () => (
-              //   <Image source={require('./reactnative/images/app-logo.png')} style={styles.applogo} />
-              // )
-            }}
+            headerShown: true,
+            headerTitle: "Home",
+            headerTintColor: '#FFEB3B',
+            headerStyle: {
+              backgroundColor: "#3F51B5"
+            },
+            // headerLeftContainerStyle:{
+            //   paddingLeft:20
+            // },
+            // headerLeft: () => (
+            //   <Image source={require('./reactnative/images/app-logo.png')} style={styles.applogo} />
+            // )
+          }}
+        />
+        <Stack.Screen
+          name="ProductDetailsScreen"
+          component={ProductDetailsScreen}
+          options={{
+            headerShown: true,
+            headerTitle: "Product Details",
+            headerTintColor: '#FFEB3B',
+            headerStyle: {
+              backgroundColor: "#3F51B5"
+            }
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -72,39 +85,53 @@ const MainScreen = () => {
   const BottomTab = createMaterialBottomTabNavigator();
   const currentTheme = useTheme()
   return (
-    <BottomTab.Navigator 
-      initialRouteName="HomeScreen" 
-      shifting = {false}
+    <BottomTab.Navigator
+      initialRouteName="HomeScreen"
+      shifting={false}
       activeColor={currentTheme.colors.appTitle}
       inactiveColor='white'
       labelStyle={{ fontSize: 12 }}
       barStyle={{
         backgroundColor: currentTheme.colors.primary
       }}>
-          <BottomTab.Screen name="HomeScreen" component={HomeScreen} options={{ 
-              tabBarLabel : "Home",
-              tabBarIcon: ({color}) => (
-                  <MaterialCommunityIcons name="home" color={color} size={25}/>
-              )
-            }}/>
-          <BottomTab.Screen name="WishListScreen" component={WishListScreen} options={{ 
-              tabBarLabel : "WishList",
-              tabBarIcon: ({color}) => (
-                  <MaterialCommunityIcons name="heart" color={color} size={25}/>
-              ),
-            }}/>
-          <BottomTab.Screen name="TrackOrdersScreen" component={TrackOrdersScreen} options={{ 
-              tabBarLabel : "Orders",
-              tabBarIcon: ({color}) => (
-                  <MaterialCommunityIcons name="format-list-bulleted" color={color} size={25}/>
-              ),
-            }}/>
-          <BottomTab.Screen name="CartScreen" component={CartScreen} options={{ 
-              tabBarLabel : "Cart",
-              tabBarIcon: ({color}) => (
-                  <MaterialCommunityIcons name="cart" color={color} size={25}/>
-              ),
-            }}/>
+      <BottomTab.Screen name="HomeScreen" component={HomeScreen} options={{
+        tabBarLabel: "Home",
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="home" color={color} size={25} />
+        )
+      }}>
+        {/* <Stack.Screen
+          name="ProductDetailsScreen"
+          component={ProductDetailsScreen}
+          options={{
+            headerShown: true,
+            headerTitle: "Product Details",
+            headerTintColor: '#FFEB3B',
+            headerStyle: {
+              backgroundColor: "#3F51B5"
+            }
+          }}
+        /> */}
+      </BottomTab.Screen>
+
+      <BottomTab.Screen name="WishListScreen" component={WishListScreen} options={{
+        tabBarLabel: "WishList",
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="heart" color={color} size={25} />
+        ),
+      }} />
+      <BottomTab.Screen name="TrackOrdersScreen" component={TrackOrdersScreen} options={{
+        tabBarLabel: "Orders",
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="format-list-bulleted" color={color} size={25} />
+        ),
+      }} />
+      <BottomTab.Screen name="CartScreen" component={CartScreen} options={{
+        tabBarLabel: "Cart",
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="cart" color={color} size={25} />
+        ),
+      }} />
     </BottomTab.Navigator>
   )
 }
